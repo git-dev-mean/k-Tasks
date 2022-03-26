@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.userModel.findOne({ email: email });
+    const user = await this.userModel.findOne({ email: email }).select('+password');
     console.log(user);
     if (!user) throw new ForbiddenException('User not found with this email');
 

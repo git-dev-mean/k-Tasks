@@ -17,6 +17,7 @@ exports.UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter your password'],
         minLength: [6, 'Your password must be longer than 6 characters.'],
+        select: false,
     },
 });
 //# sourceMappingURL=user.model.js.map

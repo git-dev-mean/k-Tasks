@@ -44,7 +44,7 @@ let UserService = class UserService {
         }
     }
     async login(email, password) {
-        const user = await this.userModel.findOne({ email: email });
+        const user = await this.userModel.findOne({ email: email }).select('+password');
         console.log(user);
         if (!user)
             throw new common_1.ForbiddenException('User not found with this email');
