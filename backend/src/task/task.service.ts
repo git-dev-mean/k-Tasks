@@ -12,19 +12,29 @@ export class TaskService {
     const result = await newTask.save();
     console.log(result);
     return result;
+
     // return {
     //   id: result.id,
     //   name: result.name,
     // };
   }
 
-  async getAllTasks() : Promise<Task[]> {
+  async getAllTasks() {
     const tasks = await this.taskModel.find().exec();
     console.log(tasks);
-    return tasks;
-    // return tasks.map((task) => ({
-    //   id: task.id,
-    //   name: task.name,
-    // }));
+    return tasks.map((task) => ({
+      id: task.id,
+      name: task.name,
+    }));
+  }
+
+  async deleteTasks(tasks: Task[]): Promise<any> {
+    // const result = await this.taskModel.deleteMany({id:{tasks.map(task => task.id)}})
+    // const result = await this.taskModel.deleteMany({_id:{$in:{tasks.map(task => task.id)}}})
+    // const result = await newTask.save();
+    const taskIds = tasks.map((task) => task.id);
+    const result = await this.taskModel.deleteMany({ _id: { $in: taskIds } });
+    console.log('delete TASKS', result);
+    return result;
   }
 }

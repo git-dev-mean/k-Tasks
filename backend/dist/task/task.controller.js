@@ -28,6 +28,10 @@ let TaskController = class TaskController {
         const tasks = await this.taskService.getAllTasks();
         return tasks;
     }
+    async deleteTasks(tasks) {
+        const res = await this.taskService.deleteTasks(tasks);
+        return res;
+    }
 };
 __decorate([
     (0, common_1.Post)('create-task'),
@@ -42,6 +46,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], TaskController.prototype, "getAllTasks", null);
+__decorate([
+    (0, common_1.Post)('delete-task'),
+    __param(0, (0, common_1.Body)('tasks')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], TaskController.prototype, "deleteTasks", null);
 TaskController = __decorate([
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.Controller)(),

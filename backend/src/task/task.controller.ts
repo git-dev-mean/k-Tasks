@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { JwtGuard } from '../user/guard';
+import {Task} from './task.model'
 
 @UseGuards(JwtGuard)
 @Controller()
@@ -26,5 +27,11 @@ export class TaskController {
   async getAllTasks() {
       const tasks = await this.taskService.getAllTasks();
       return tasks;
+  }
+
+  @Post('delete-task')
+  async deleteTasks(@Body('tasks') tasks: Task[]) {
+      const res = await this.taskService.deleteTasks(tasks);
+      return res;
   }
 }

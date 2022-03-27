@@ -29,7 +29,16 @@ let TaskService = class TaskService {
     async getAllTasks() {
         const tasks = await this.taskModel.find().exec();
         console.log(tasks);
-        return tasks;
+        return tasks.map((task) => ({
+            id: task.id,
+            name: task.name,
+        }));
+    }
+    async deleteTasks(tasks) {
+        const taskIds = tasks.map((task) => task.id);
+        const result = await this.taskModel.deleteMany({ _id: { $in: taskIds } });
+        console.log('delete TASKS', result);
+        return result;
     }
 };
 TaskService = __decorate([
