@@ -1,6 +1,6 @@
 export default interface ITask {
-    id: string;
-    name: string;
+    id?: string;
+    name?: string;
     delete?:boolean|false;
   }
   

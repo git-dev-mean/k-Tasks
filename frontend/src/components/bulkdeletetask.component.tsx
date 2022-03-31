@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AuthService from "../services/auth.service";
 import TaskService from "../services/task.service";
-import { Navigate } from "react-router-dom";
 import ITask from "../types/task.type";
 import { Table } from "react-bootstrap";
 import EventBus from "../common/EventBus";
@@ -20,15 +18,9 @@ const BulkDeleteTask: React.FC = (): JSX.Element => {
   });
   const [tasks, setTasks] = useState<ITask[]>([{ id: "", name: "" }]);
   const [selectedList, setSelectedList] = useState<ITask[]>([
-    { id: "", name: "", delete: false },
+     { id: "", name: "", delete: false },
   ]);
   useEffect(() => {
-    const accessToken = AuthService.getCurrentUser();
-    console.log(accessToken);
-    setComponentState({ ...componentState, accessToken: accessToken });
-    console.log(componentState.accessToken);
-    if (!accessToken) <Navigate to="/home" />;
-
     TaskService.list_task()
       .then((response) => {
         return response.data;
@@ -36,7 +28,8 @@ const BulkDeleteTask: React.FC = (): JSX.Element => {
       .then((data) => {
         let tasksArr: ITask[] = [];
         data.map((task: ITask) => {
-          tasksArr.push(task);
+          var temp = {...task, delete:false}
+          tasksArr.push(temp);
         });
         console.log(tasksArr);
         return tasksArr;
@@ -78,17 +71,10 @@ const BulkDeleteTask: React.FC = (): JSX.Element => {
       return task;
     });
 
-    //To Control Master Checkbox State
-    // const totalItems = this.state.List.length;
-    // const totalCheckedItems = tempList.filter((e) => e.selected).length;
     setTasks(tempList);
-    setSelectedList(tasks.filter((e) => e.delete));
-    // Update State
-    // this.setState({
-    //   MasterChecked: totalItems === totalCheckedItems,
-    //   List: tempList,
-    //   SelectedList: this.state.List.filter((e) => e.selected),
-    // });
+    
+    const currentSelected = tasks.filter((e) => e.delete);
+    setSelectedList(currentSelected);
   };
   const TaskItems = tasks.map((task) => (
     <tr key={task.id}>

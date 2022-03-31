@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AuthService from "../services/auth.service";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../contexts/login.contexts";
 
 interface Props {
   text: string;
@@ -13,55 +14,59 @@ interface IState {
   password: string;
   loading: boolean;
   message: string;
-};
+}
 const Login: React.FC<Props> = (): JSX.Element => {
-  const [ componentState, setComponentState ] = useState<IState>({
+  const { setName } = useContext(LoginContext);
+  const [componentState, setComponentState] = useState<IState>({
     username: "",
     password: "",
     loading: false,
     message: "",
   });
   const navigate = useNavigate();
-  const validationSchema=()=> {
+  const validationSchema = () => {
     return Yup.object().shape({
       username: Yup.string().required("This field is required!"),
       password: Yup.string().required("This field is required!"),
     });
-  }
+  };
 
-  const handleLogin=(formValue: { username: string; password: string })=> {
+  const handleLogin = (formValue: { username: string; password: string }) => {
     const { username, password } = formValue;
 
-    
     setComponentState({
       ...componentState,
       loading: true,
-      message: ''
+      message: "",
     });
 
+    AuthService.login(username, password)
+      .then((data) => {
+        console.log("successfull login", data);
+        setName(data)
+      })
+      .then(
+        () => {
+          navigate("/list-tasks");
+          // <props.history.push("/profile");
+          // window.location.reload();>
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
-    AuthService.login(username, password).then(
-      () => {
-        navigate('/list-tasks');
-        // <props.history.push("/profile");
-        // window.location.reload();>
-      },
-      error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        setComponentState({
-          ...componentState,
-          loading: false,
-          message: resMessage
-        });
-      }
-    );
-  }
+          setComponentState({
+            ...componentState,
+            loading: false,
+            message: resMessage,
+          });
+        }
+      );
+  };
   const initialValues = {
     username: "",
     password: "",

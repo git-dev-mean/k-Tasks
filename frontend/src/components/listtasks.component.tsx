@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AuthService from "../services/auth.service";
 import TaskService from "../services/task.service";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ITask from "../types/task.type";
 import { Table } from "react-bootstrap";
 import EventBus from "../common/EventBus";
@@ -22,13 +22,11 @@ const List_Tasks: React.FC = (): JSX.Element => {
     accessToken: "",
   });
   const [tasks, setTasks] = useState<ITask[]>([{ id: "", name: "" }]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const accessToken = AuthService.getCurrentUser();
-    console.log(accessToken);
+
     setComponentState({ ...componentState, accessToken: accessToken });
-    console.log(componentState.accessToken);
-    if (!accessToken) <Navigate to="/home" />;
 
     TaskService.list_task()
       .then((response) => {
@@ -50,8 +48,10 @@ const List_Tasks: React.FC = (): JSX.Element => {
       .catch((err) => {
         if (err.response && err.response.status === 401) {
           console.log("LOGIN FIRST ");
+          navigate("/login");
           EventBus.dispatch("logout");
         }
+
         console.log(err);
       });
   }, []);

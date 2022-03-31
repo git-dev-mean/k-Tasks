@@ -12,10 +12,11 @@ class AuthService {
     });
   }
   logout() {
+    console.log("USER LOGOUT IN AUTH SERVICE");
     localStorage.removeItem("user");
   }
   register(name: string, email: string, password: string) {
-    console.log('register user service')
+    console.log("register user service");
     return axios.post(API_URL + "register", { name, email, password });
   }
   getCurrentUser() {
